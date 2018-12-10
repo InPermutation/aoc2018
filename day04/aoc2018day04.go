@@ -76,8 +76,7 @@ func sleepiest(logs sleepers) (guard string) {
 	return guard
 }
 
-func mostCommon(schedule []time.Time) (minute int) {
-	slept := 0
+func mostCommon(schedule []time.Time) (minute int, slept int) {
 	for i := 0; i < 60; i++ {
 		sum := 0
 		for j := 0; j < len(schedule); j += 2 {
@@ -100,6 +99,16 @@ func main() {
 
 	logs := collate(text)
 	chose := sleepiest(logs)
-	minute := mostCommon(logs[chose])
-	fmt.Println(chose, minute)
+	minute, slept := mostCommon(logs[chose])
+	fmt.Println("The sleepiest guard sleeps most on", chose, minute)
+	var guard2 string
+	var maxSlept, bestMinute int
+	for guard, schedule := range logs {
+		minute, slept = mostCommon(schedule)
+		if slept > maxSlept {
+			maxSlept, bestMinute = slept, minute
+			guard2 = guard
+		}
+	}
+	fmt.Println(guard2, bestMinute)
 }
